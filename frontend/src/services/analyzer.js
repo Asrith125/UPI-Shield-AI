@@ -1,20 +1,20 @@
 
+import { extractPaymentData } from "./ocr.js";
+import { detectFraud } from "./detection.js";
+
 export async function analyzeScreenshot(file) {
-  // Temporary integration placeholder.
-  // Teammates will replace this with real OCR
-  // and forensic analysis.
+  const start = performance.now();
+
+  // Step 1: OCR
+  const ocr = await extractPaymentData(file);
+
+  // Step 2: Fraud checks
+  const detection = await detectFraud(ocr, file);
 
   return {
-    verdict: "Inconclusive",
-    app: "Not identified",
-    amount: null,
-    transactionId: null,
-    timestamp: null,
-    reasons: [
-      "OCR engine is not connected yet",
-      "Image forensics is not connected yet",
-      "Verify the payment using your bank account"
-    ],
-    mode: "DEMO"
+    ...ocr,
+    ...detection,
+    processingMs: Math.round(performance.now() - start),
+    mode: "BASIC_CHECKS"
   };
 }
